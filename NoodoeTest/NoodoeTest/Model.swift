@@ -9,32 +9,50 @@ import Foundation
 
 // MARK: - Model
 struct Model: Codable {
-    let objectID, username, code: String
-    let isVerifiedReportEmail: Bool
-    let reportEmail, createdAt, updatedAt: String
-    let timezone, parameter, number: Int
-    let phone, timeZone, timone: String
-    let acl: ACL
-    let sessionToken: String
+    let objectID, username: String?
+    let code: CodeDataModel?
+    let isVerifiedReportEmail: Bool?
+    let reportEmail, createdAt, updatedAt: String?
+    let timezone, parameter, number: Int?
+    let phone, timeZone, timone: String?
+    let acl: [String : [String : Bool]]?
+    let sessionToken: String?
+    let error: String?
 
     enum CodingKeys: String, CodingKey {
         case objectID = "objectId"
-        case username, code, isVerifiedReportEmail, reportEmail, createdAt, updatedAt, timezone, parameter, number, phone, timeZone, timone
+        case username, code, isVerifiedReportEmail, reportEmail, createdAt, updatedAt, timezone, parameter, number, phone, timeZone, timone, error
         case acl = "ACL"
         case sessionToken
     }
 }
 
-// MARK: - ACL
-struct ACL: Codable {
-    let wkuKfCAdGq: WkuKfCAdGq
+enum CodeDataModel: Codable {
+    case string(String)
+    case int(Int)
 
-    enum CodingKeys: String, CodingKey {
-        case wkuKfCAdGq = "WkuKfCAdGq"
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if let x = try? container.decode(String.self) {
+            self = .string(x)
+            return
+        }
+        if let x = try? container.decode(Int.self) {
+            self = .int(x)
+            return
+        }
+        throw DecodingError.typeMismatch(CodeDataModel.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for CodeDataModel"))
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        switch self {
+        case .string(let x):
+            try container.encode(x)
+        case .int(let x):
+            try container.encode(x)
+        }
     }
 }
 
-// MARK: - WkuKfCAdGq
-struct WkuKfCAdGq: Codable {
-    let read, write: Bool
-}
+
