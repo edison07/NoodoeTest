@@ -15,7 +15,7 @@ class APIManager {
         
         guard let url = URL(string: url) else { return }
         var request = URLRequest(url: url, method: method, headers: headers)
-
+        
         if let parameters = parameters {
             let jsonData = try? JSONSerialization.data(withJSONObject: parameters)
             request.httpBody = jsonData
@@ -28,12 +28,14 @@ class APIManager {
                 guard let data = data else {
                     return
                 }
-                
-                do {
-                    let data = try JSONDecoder().decode(T.self, from: data)
-                    completion(.success(data))
-                } catch let error{
-                    completion(.failure(error))
+                DispatchQueue.main.async {
+                    
+                    do {
+                        let data = try JSONDecoder().decode(T.self, from: data)
+                        completion(.success(data))
+                    } catch let error{
+                        completion(.failure(error))
+                    }
                 }
             }.resume()
         }

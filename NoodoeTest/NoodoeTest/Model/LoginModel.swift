@@ -7,8 +7,7 @@
 
 import Foundation
 
-// MARK: - Model
-struct Model: Codable {
+struct LoginModel: Codable {
     let objectID, username: String?
     let code: CodeDataModel?
     let isVerifiedReportEmail: Bool?

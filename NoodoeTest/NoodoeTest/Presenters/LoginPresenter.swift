@@ -7,21 +7,21 @@
 
 import Foundation
 
-protocol PresenterDelegate: AnyObject {
+protocol LoginPresenterDelegate: AnyObject {
     func didFetchData()
 }
 
-class Presenter {
+class LoginPresenter {
     
-    var data: Model?
-    weak var delegate: PresenterDelegate?
+    var data: LoginModel?
+    weak var delegate: LoginPresenterDelegate?
     
     func login(username: String, password: String) {
         let parameters = ["username" : username, "password" : password]
         let headers = ["X-Parse-Application-Id" : "vqYuKPOkLQLYHhk4QTGsGKFwATT4mBIGREI2m8eD",
                        "X-Parse-REST-API-Key" : "",
                        "Content-Type" : "Application/json"]
-        APIManager.shared.executeQuery(url: Constants.url, method: .post, parameters: parameters, headers: headers) { (result: Result<Model, Error>) in
+        APIManager.shared.executeQuery(url: Constants.loginURL, method: .post, parameters: parameters, headers: headers) { (result: Result<LoginModel, Error>) in
             switch result {
             case .success(let data):
                 self.data = data

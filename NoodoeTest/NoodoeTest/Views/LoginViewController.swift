@@ -7,9 +7,9 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class LoginViewController: UIViewController {
 
-    private let presenter = Presenter()
+    private let presenter = LoginPresenter()
     
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
@@ -36,9 +36,17 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController: PresenterDelegate {
+extension LoginViewController: LoginPresenterDelegate {
     func didFetchData() {
-        print(presenter.data)
+        if let error = presenter.data?.error {
+            presentAlert(withTitle: "登入失敗", message: error, completionHandler: nil)
+        } else {
+            presentAlert(withTitle: "登入成功", message: nil) {
+                let vc = UpdateViewController.viewController(from: .main)
+                vc.data = self.presenter.data
+                self.show(vc, sender: nil)
+            }
+        }
     }
 }
 
